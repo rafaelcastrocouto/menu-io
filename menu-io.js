@@ -12,6 +12,7 @@ var MenuIO;
             Element,
             Options         = {},
             ElementFuncs    = new ElementFuncsProto(),
+            ElementWidth,
             ElementHeight,
             ElementEvent,
             MenuFuncs       = {},
@@ -206,12 +207,28 @@ var MenuIO;
             var isNumberX   = typeof x === 'number',
                 isNumberY   = typeof y === 'number',
                 heightMenu  = getMenuHeight(),
-                heightInner = window.innerHeight;
+                widthMenu   = getMenuWidth(),
+                heightInner = window.innerHeight,
+                widthInner  = window.innerWidth;
             
-            if (heightInner < heightMenu + y)
+            if (widthInner < widthMenu + x) {
+                x -= widthMenu;
+                
+                if (x < 0) {
+                  if (x < widthMenu) x = (widthInner - widthMenu)/2;
+                  else x = 0;
+                }
+                    
+            }
+            
+            if (heightInner < heightMenu + y) {
                 y -= heightMenu;
-
-            if (y < 0) y = 0;
+                
+                if (y < 0) {
+                    if (y < heightMenu) y = (heightInner - heightMenu)/2;
+                    else y = 0;
+                }
+            }
             
             if (isNumberX)
                 ElementMenu.style.left  = x + 'px';
@@ -262,12 +279,26 @@ var MenuIO;
             var styleComputed, height;
             
             if (!ElementHeight) {
-                height              = ElementMenu.offsetHeight;
-                if (!height) height = getComputedStyle(ElementMenu).height;
-                ElementHeight       = parseInt(height, 10);
+                styleComputed   = getComputedStyle(ElementMenu);
+                height           = styleComputed.height;
+                
+                ElementHeight   = parseInt(height, 10);
             }
                 
             return ElementHeight;
+        }
+
+         function getMenuWidth() {
+            var styleComputed, width;
+            
+            if (!ElementWidth) {
+                styleComputed   = getComputedStyle(ElementMenu);
+                width           = styleComputed.width;
+                
+                ElementWidth    = parseInt(width, 10);
+            }
+            
+            return ElementWidth;
         }
         
         init();
